@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TingTango", "TingTango.csproj", "{B83EA871-BBCB-4A4B-8410-8040626B924B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B83EA871-BBCB-4A4B-8410-8040626B924B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83EA871-BBCB-4A4B-8410-8040626B924B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83EA871-BBCB-4A4B-8410-8040626B924B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83EA871-BBCB-4A4B-8410-8040626B924B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74289AD2-93C1-4CE2-9BF2-91BC1EA1B8CB}
+	EndGlobalSection
+EndGlobal
