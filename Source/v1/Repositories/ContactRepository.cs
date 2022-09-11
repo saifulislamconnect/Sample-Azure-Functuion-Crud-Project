@@ -14,7 +14,7 @@ namespace TingTango.Source.v1.Repositories
             singleton = new ContactRepository();
         }
 
-        public static ContactRepository Get() => singleton;
+        public static ContactRepository Instance() => singleton;
 
         private readonly Dictionary<string, Contact> contacts;
 

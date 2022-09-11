@@ -19,7 +19,7 @@ namespace TingTango.Source.v1.Functions
             ILogger log)
         {
             var allContacts = ContactRepository
-                .Get()
+                .Instance()
                 .GetAll()
                 .Select(x => new Contact
                 {
@@ -38,7 +38,7 @@ namespace TingTango.Source.v1.Functions
             string contactId)
         {
             var contact = ContactRepository
-                .Get()
+                .Instance()
                 .Get(contactId);
 
             if (contact == null)
@@ -62,7 +62,7 @@ namespace TingTango.Source.v1.Functions
             try
             {
                 ContactRepository
-                    .Get()
+                    .Instance()
                     .Create(contact);
 
                 return new AcceptedResult();
@@ -89,7 +89,7 @@ namespace TingTango.Source.v1.Functions
             try
             {
                 ContactRepository
-                    .Get()
+                    .Instance()
                     .Update(contactId, contact);
                 return new AcceptedResult();
             }
