@@ -37,10 +37,10 @@ namespace TingTango.Source
         {
             if (headers.TryGetValue("Accept", out var acceptHeader))
             {
-                if (acceptHeader.Equals("application/vnd.fbeltrao.api-v1+json", StringComparison.InvariantCultureIgnoreCase))
+                if (acceptHeader.Equals("application/api-v1+json", StringComparison.InvariantCultureIgnoreCase))
                     return "1";
 
-                if (acceptHeader.Equals("application/vnd.fbeltrao.api-v2+json", StringComparison.InvariantCultureIgnoreCase))
+                if (acceptHeader.Equals("application/api-v2+json", StringComparison.InvariantCultureIgnoreCase))
                     return "2";
             }
 
