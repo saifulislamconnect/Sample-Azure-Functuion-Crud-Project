@@ -25,7 +25,7 @@ namespace TingTango.Source
             switch (ResolveVersion(headers, query))
             {
                 case "1":
-                    return v1.Functions.ContactFunction.ContactList(req, log);
+                    return v1.Functions.ContactFunction.GetContactList(req, log);
                 /*case "2":
                     return v2.Functions.ContactFunction.V1List(req, log);*/
                 default:

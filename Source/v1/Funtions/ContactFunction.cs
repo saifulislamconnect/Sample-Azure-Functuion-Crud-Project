@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using System;
 using System.Linq;
 using TingTango.Source.v1.Models;
@@ -12,39 +13,46 @@ namespace TingTango.Source.v1.Functions
 {
     public static class ContactFunction
     {
-        [FunctionName(nameof(ContactList))]
-        public static IActionResult ContactList(
+        [FunctionName(nameof(GetContactList))]
+        public static IActionResult GetContactList(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact")]
             HttpRequest req,
             ILogger log)
         {
-            var allContacts = ContactRepository
+            try
+            {
+                var allContacts = ContactRepository
                 .Instance()
-                .GetAll()
-                .Select(x => new Contact
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                });
-
-            return new JsonResult(allContacts);
+                .GetAll();
+                return new JsonResult(allContacts);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
+            }
         }
 
-        [FunctionName(nameof(SingleContact))]
-        public static IActionResult SingleContact(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact/{contactId}")]
+        [FunctionName(nameof(SearchContact))]
+        public static IActionResult SearchContact(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact/{contactName}")]
             HttpRequest req,
             ILogger log,
-            string contactId)
+            string contactName)
         {
-            var contact = ContactRepository
+            try
+            {
+                var contacts = ContactRepository
                 .Instance()
-                .Get(contactId);
+                .GetAlike(contactName);
+                if (contacts.Count == 0)
+                    return new JsonResult("No match found.");
 
-            if (contact == null)
-                return new NotFoundResult();
-
-            return new OkObjectResult(contact);
+                return new JsonResult(contacts);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
+            }
         }
 
         [FunctionName(nameof(CreateContact))]
@@ -53,49 +61,58 @@ namespace TingTango.Source.v1.Functions
             Contact input,
             ILogger log)
         {
-            var contact = new Contact
-            {
-                Id = input.Id,
-                Name = input.Name
-            };
 
             try
             {
                 ContactRepository
                     .Instance()
-                    .Create(contact);
+                    .Create(input);
 
-                return new AcceptedResult();
+                return new OkObjectResult(ApplicationMessages.CreateSuccess);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new BadRequestResult();
+                return new JsonResult(ex.Message);
             }
         }
 
         [FunctionName(nameof(UpdateContact))]
         public static IActionResult UpdateContact(
-            [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.version + "/contact/{contactId}")]
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.version + "/contact/{contactName}")]
             Contact input,
             ILogger log,
-            string contactId)
+            string contactName)
         {
-            var contact = new Contact
-            {
-                Id = contactId,
-                Name = input.Name
-            };
-
             try
             {
                 ContactRepository
                     .Instance()
-                    .Update(contactId, contact);
-                return new AcceptedResult();
+                    .Update(contactName, input);
+                return new OkObjectResult(ApplicationMessages.UpdateSuccess);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new NotFoundResult();
+                return new JsonResult(ex.Message);
+            }
+        }
+
+        [FunctionName(nameof(DeleteContact))]
+        public static IActionResult DeleteContact(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = AppConstant.version + "/contact/{contactName}")]
+            Contact input,
+            ILogger log,
+            string contactName)
+        {
+            try
+            {
+                ContactRepository
+                    .Instance()
+                    .Delete(contactName);
+                return new OkObjectResult(ApplicationMessages.DeleteSuccess);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
             }
         }
     }
