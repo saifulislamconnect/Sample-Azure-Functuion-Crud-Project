@@ -1,10 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace TingTango.Source
 {
@@ -30,7 +30,7 @@ namespace TingTango.Source
                     return v2.Functions.ContactFunction.V1List(req, log);*/
                 default:
                     return new BadRequestObjectResult("Invalid version");
-            }            
+            }
         }
 
         private static string ResolveVersion(IDictionary<string, string> headers, IDictionary<string, string> query)
@@ -49,7 +49,7 @@ namespace TingTango.Source
                 if (float.TryParse(queryStringVersion, out _))
                 {
                     return queryStringVersion;
-                }                
+                }
             }
 
             return null;

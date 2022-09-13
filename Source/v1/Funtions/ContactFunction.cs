@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using System;
-using System.Linq;
 using TingTango.Source.v1.Models;
 using TingTango.Source.v1.Repositories;
 
@@ -61,7 +59,6 @@ namespace TingTango.Source.v1.Functions
             Contact input,
             ILogger log)
         {
-
             try
             {
                 ContactRepository

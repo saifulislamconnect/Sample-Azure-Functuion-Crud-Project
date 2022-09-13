@@ -1,24 +1,20 @@
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using TingTango.Source.v1.Models;
 
 namespace TingTango.Source.v1.Repositories
 {
     public class ContactRepository
     {
-        static readonly ContactRepository singleton;
-        static readonly string collectionName;
-        IMongoDatabase database;
+        private static readonly ContactRepository singleton;
+        private static readonly string collectionName;
+        private IMongoDatabase database;
 
-        ContactRepository(){}
+        private ContactRepository()
+        { }
 
         static ContactRepository()
         {
