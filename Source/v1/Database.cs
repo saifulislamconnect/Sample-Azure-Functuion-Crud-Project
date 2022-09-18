@@ -4,10 +4,10 @@ namespace TingTango.Source.v1;
 
 internal static class Database
 {
-    public static IMongoDatabase GetDBContext()
+    public static IMongoDatabase GetDbContext()
     {
-        var client = new MongoClient(AppConstant.connectionString);
-        var database = client.GetDatabase(AppConstant.dbName);
+        var client = new MongoClient(AppConstant.ConnectionString);
+        var database = client.GetDatabase(AppConstant.DbName);
         return database;
     }
 }

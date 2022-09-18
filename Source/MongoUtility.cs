@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -12,13 +13,9 @@ internal static class MongoUtility
         return BsonSerializer.Deserialize<T>(data);
     }
 
-    public static List<T> BsonToDocument<T>(List<BsonDocument> bsonList)
+    public static List<T> BsonToDocument<T>(IEnumerable<BsonDocument> bsonList)
     {
-        var dataList = new List<T>();
-        foreach (var bsonDoc in bsonList)
-            dataList.Add(BsonToDocument<T>(bsonDoc));
-
-        return dataList;
+        return bsonList.Select(BsonToDocument<T>).ToList();
     }
 
     public static IMongoCollection<BsonDocument> GetCollectionAsBsonDocument(IMongoDatabase database,

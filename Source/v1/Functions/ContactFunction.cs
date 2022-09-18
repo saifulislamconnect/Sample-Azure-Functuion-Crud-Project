@@ -13,7 +13,7 @@ public static class ContactFunction
 {
     [FunctionName(nameof(GetContactList))]
     public static IActionResult GetContactList(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact")]
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.Version + "/contact")]
         HttpRequest req,
         ILogger log)
     {
@@ -32,7 +32,7 @@ public static class ContactFunction
 
     [FunctionName(nameof(SearchContact))]
     public static IActionResult SearchContact(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact/{contactName}")]
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.Version + "/contact/{contactName}")]
         HttpRequest req,
         ILogger log,
         string contactName)
@@ -55,7 +55,7 @@ public static class ContactFunction
 
     [FunctionName(nameof(CreateContact))]
     public static IActionResult CreateContact(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = AppConstant.version + "/contact")]
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = AppConstant.Version + "/contact")]
         Contact input,
         ILogger log)
     {
@@ -75,7 +75,7 @@ public static class ContactFunction
 
     [FunctionName(nameof(UpdateContact))]
     public static IActionResult UpdateContact(
-        [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.version + "/contact/{contactName}")]
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.Version + "/contact/{contactName}")]
         Contact input,
         ILogger log,
         string contactName)
@@ -95,7 +95,7 @@ public static class ContactFunction
 
     [FunctionName(nameof(DeleteContact))]
     public static IActionResult DeleteContact(
-        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = AppConstant.version + "/contact/{contactName}")]
+        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = AppConstant.Version + "/contact/{contactName}")]
         Contact input,
         ILogger log,
         string contactName)

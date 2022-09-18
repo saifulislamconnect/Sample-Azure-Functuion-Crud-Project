@@ -27,8 +27,6 @@ public static class RouterFunction
         {
             case "1":
                 return ContactFunction.GetContactList(req, log);
-            /*case "2":
-                return v2.Functions.ContactFunction.V1List(req, log);*/
             default:
                 return new BadRequestObjectResult("Invalid version");
         }
