@@ -1,116 +1,115 @@
+using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using System;
 using TingTango.Source.v1.Models;
 using TingTango.Source.v1.Repositories;
 
-namespace TingTango.Source.v1.Functions
+namespace TingTango.Source.v1.Functions;
+
+public static class ContactFunction
 {
-    public static class ContactFunction
+    [FunctionName(nameof(GetContactList))]
+    public static IActionResult GetContactList(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact")]
+        HttpRequest req,
+        ILogger log)
     {
-        [FunctionName(nameof(GetContactList))]
-        public static IActionResult GetContactList(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact")]
-            HttpRequest req,
-            ILogger log)
+        try
         {
-            try
-            {
-                var allContacts = ContactRepository
+            var allContacts = ContactRepository
                 .Instance()
                 .GetAll();
-                return new JsonResult(allContacts);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
+            return new JsonResult(allContacts);
         }
-
-        [FunctionName(nameof(SearchContact))]
-        public static IActionResult SearchContact(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact/{contactName}")]
-            HttpRequest req,
-            ILogger log,
-            string contactName)
+        catch (Exception ex)
         {
-            try
-            {
-                var contacts = ContactRepository
+            return new JsonResult(ex.Message);
+        }
+    }
+
+    [FunctionName(nameof(SearchContact))]
+    public static IActionResult SearchContact(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = AppConstant.version + "/contact/{contactName}")]
+        HttpRequest req,
+        ILogger log,
+        string contactName)
+    {
+        try
+        {
+            var contacts = ContactRepository
                 .Instance()
                 .GetAlike(contactName);
-                if (contacts.Count == 0)
-                    return new JsonResult("No match found.");
+            if (contacts.Count == 0)
+                return new JsonResult("No match found.");
 
-                return new JsonResult(contacts);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
+            return new JsonResult(contacts);
         }
-
-        [FunctionName(nameof(CreateContact))]
-        public static IActionResult CreateContact(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = AppConstant.version + "/contact")]
-            Contact input,
-            ILogger log)
+        catch (Exception ex)
         {
-            try
-            {
-                ContactRepository
-                    .Instance()
-                    .Create(input);
-
-                return new OkObjectResult(ApplicationMessages.CreateSuccess);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
+            return new JsonResult(ex.Message);
         }
+    }
 
-        [FunctionName(nameof(UpdateContact))]
-        public static IActionResult UpdateContact(
-            [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.version + "/contact/{contactName}")]
-            Contact input,
-            ILogger log,
-            string contactName)
+    [FunctionName(nameof(CreateContact))]
+    public static IActionResult CreateContact(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = AppConstant.version + "/contact")]
+        Contact input,
+        ILogger log)
+    {
+        try
         {
-            try
-            {
-                ContactRepository
-                    .Instance()
-                    .Update(contactName, input);
-                return new OkObjectResult(ApplicationMessages.UpdateSuccess);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
+            ContactRepository
+                .Instance()
+                .Create(input);
+
+            return new OkObjectResult(ApplicationMessages.CreateSuccess);
         }
-
-        [FunctionName(nameof(DeleteContact))]
-        public static IActionResult DeleteContact(
-            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = AppConstant.version + "/contact/{contactName}")]
-            Contact input,
-            ILogger log,
-            string contactName)
+        catch (Exception ex)
         {
-            try
-            {
-                ContactRepository
-                    .Instance()
-                    .Delete(contactName);
-                return new OkObjectResult(ApplicationMessages.DeleteSuccess);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
+            return new JsonResult(ex.Message);
+        }
+    }
+
+    [FunctionName(nameof(UpdateContact))]
+    public static IActionResult UpdateContact(
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = AppConstant.version + "/contact/{contactName}")]
+        Contact input,
+        ILogger log,
+        string contactName)
+    {
+        try
+        {
+            ContactRepository
+                .Instance()
+                .Update(contactName, input);
+            return new OkObjectResult(ApplicationMessages.UpdateSuccess);
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(ex.Message);
+        }
+    }
+
+    [FunctionName(nameof(DeleteContact))]
+    public static IActionResult DeleteContact(
+        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = AppConstant.version + "/contact/{contactName}")]
+        Contact input,
+        ILogger log,
+        string contactName)
+    {
+        try
+        {
+            ContactRepository
+                .Instance()
+                .Delete(contactName);
+            return new OkObjectResult(ApplicationMessages.DeleteSuccess);
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(ex.Message);
         }
     }
 }

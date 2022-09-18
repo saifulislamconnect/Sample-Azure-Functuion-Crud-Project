@@ -1,58 +1,54 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+using TingTango.Source.v1.Functions;
 
-namespace TingTango.Source
+namespace TingTango.Source;
+
+/// <summary>
+///     Router function calling concrete implementation based on the version expressed in query string or accept header.
+///     Simple implementation, should be replaced once/if HttpTrigger can have header/query string based routing
+/// </summary>
+public static class RouterFunction
 {
-    /// <summary>
-    /// Router function calling concrete implementation based on the version expressed in query string or accept header.
-    /// Simple implementation, should be replaced once/if HttpTrigger can have header/query string based routing
-    /// </summary>
-    public static class RouterFunction
+    [FunctionName(nameof(RouterList))]
+    public static IActionResult RouterList(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "contact")]
+        HttpRequest req,
+        ILogger log,
+        IDictionary<string, string> headers,
+        IDictionary<string, string> query)
     {
-        [FunctionName(nameof(RouterList))]
-        public static IActionResult RouterList(
-           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "contact")]
-            HttpRequest req,
-            ILogger log,
-            IDictionary<string, string> headers,
-            IDictionary<string, string> query)
+        switch (ResolveVersion(headers, query))
         {
-            switch (ResolveVersion(headers, query))
-            {
-                case "1":
-                    return v1.Functions.ContactFunction.GetContactList(req, log);
-                /*case "2":
-                    return v2.Functions.ContactFunction.V1List(req, log);*/
-                default:
-                    return new BadRequestObjectResult("Invalid version");
-            }
+            case "1":
+                return ContactFunction.GetContactList(req, log);
+            /*case "2":
+                return v2.Functions.ContactFunction.V1List(req, log);*/
+            default:
+                return new BadRequestObjectResult("Invalid version");
+        }
+    }
+
+    private static string ResolveVersion(IDictionary<string, string> headers, IDictionary<string, string> query)
+    {
+        if (headers.TryGetValue("Accept", out var acceptHeader))
+        {
+            if (acceptHeader.Equals("application/api-v1+json", StringComparison.InvariantCultureIgnoreCase))
+                return "1";
+
+            if (acceptHeader.Equals("application/api-v2+json", StringComparison.InvariantCultureIgnoreCase))
+                return "2";
         }
 
-        private static string ResolveVersion(IDictionary<string, string> headers, IDictionary<string, string> query)
-        {
-            if (headers.TryGetValue("Accept", out var acceptHeader))
-            {
-                if (acceptHeader.Equals("application/api-v1+json", StringComparison.InvariantCultureIgnoreCase))
-                    return "1";
+        if (query.TryGetValue("version", out var queryStringVersion))
+            if (float.TryParse(queryStringVersion, out _))
+                return queryStringVersion;
 
-                if (acceptHeader.Equals("application/api-v2+json", StringComparison.InvariantCultureIgnoreCase))
-                    return "2";
-            }
-
-            if (query.TryGetValue("version", out var queryStringVersion))
-            {
-                if (float.TryParse(queryStringVersion, out _))
-                {
-                    return queryStringVersion;
-                }
-            }
-
-            return null;
-        }
+        return null;
     }
 }
